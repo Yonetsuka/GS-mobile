@@ -1,3 +1,5 @@
+import React from 'react';
+import { Text} from 'react-native';
 import { useContext } from 'react';
 import { View, Button, ScrollView } from 'react-native';
 import { AlertaContext } from '../contexts/AlertaContext';
@@ -8,6 +10,9 @@ export default function Home({ navigation }: any) {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+        Últimos alertas de falta de energia
+      </Text>
       <Button title="Novo Alerta" onPress={() => navigation.navigate('NovoAlerta')} />
       {alertas.map((a, i) => (
         <AlertaCard key={i} alerta={a} />

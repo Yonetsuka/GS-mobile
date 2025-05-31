@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "alerta-temporal",
-    "slug": "alerta-temporal",
+    "name": "alerta-falta-energia",
+    "slug": "Alerta Energia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

@@ -1,5 +1,5 @@
 export type Alerta = {
-  tipo: string;
+  tipo: 'temporal' | 'granizo' | 'enchente' | 'vendaval';
   local: string;
   descricao: string;
   severidade: string;
