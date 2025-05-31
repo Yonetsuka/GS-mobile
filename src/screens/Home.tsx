@@ -10,10 +10,10 @@ export default function Home({ navigation }: any) {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
+      <Button title="Novo Alerta" onPress={() => navigation.navigate('NovoAlerta')} />
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
         Últimos alertas de falta de energia
       </Text>
-      <Button title="Novo Alerta" onPress={() => navigation.navigate('NovoAlerta')} />
       {alertas.map((a, i) => (
         <AlertaCard key={i} alerta={a} />
       ))}
