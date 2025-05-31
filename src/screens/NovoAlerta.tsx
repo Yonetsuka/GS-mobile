@@ -1,57 +1,99 @@
-import { useState, useContext } from 'react';
-import { View, TextInput, Button, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Image } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { AlertaContext } from '../contexts/AlertaContext';
-import { TIPOS_ALERTA } from '../types/tipos';
 
-export default function NovoAlerta({ navigation }: any) {
-  const [form, setForm] = useState({
-    tipo: 'temporal',
-    local: '',
-    descricao: '',
-  });
+type Props = {
+  onVoltar: () => void;
+  onSalvar: (alerta: { tipo: string; local: string; descricao: string }) => void;
+};
 
-  const { adicionarAlerta } = useContext(AlertaContext);
+const tipos = ['enchente', 'granizo', 'temporal', 'vendaval'];
+
+export default function NovoAlerta({ onVoltar, onSalvar }: Props) {
+  const [tipo, setTipo] = useState(tipos[0]);
+  const [local, setLocal] = useState('');
+  const [descricao, setDescricao] = useState('');
+
+  // Função para mostrar a imagem dependendo do tipo
+  const imagemPorTipo = (tipo: string) => {
+    switch (tipo) {
+      case 'enchente':
+        return require('../assets/enchente.png');
+      case 'granizo':
+        return require('../assets/granizo.png');
+      case 'temporal':
+        return require('../assets/temporal.png');
+      case 'vendaval':
+        return require('../assets/vendaval.png');
+      default:
+        return null;
+    }
+  };
 
   const handleSalvar = () => {
-    const novoAlerta = {
-      ...form,
-      dataHora: new Date().toISOString(),
-      severidade: 'Alta',
-    };
-    adicionarAlerta(novoAlerta);
-    navigation.goBack();
+    if (!local || !descricao) {
+      alert('Preencha todos os campos');
+      return;
+    }
+    onSalvar({ tipo, local, descricao });
   };
 
   return (
-    <View style={{ padding: 16 }}>
-      <Text style={{ marginBottom: 4 }}>Tipo de evento climático:</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Novo Alerta</Text>
+
+      <Text>Tipo:</Text>
       <Picker
-        selectedValue={form.tipo}
-        onValueChange={(value) => setForm({ ...form, tipo: value })}
+        selectedValue={tipo}
+        onValueChange={(itemValue) => setTipo(itemValue)}
+        style={styles.picker}
       >
-        {TIPOS_ALERTA.map((tipo) => (
-          <Picker.Item key={tipo.value} label={tipo.label} value={tipo.value} />
+        {tipos.map((t) => (
+          <Picker.Item key={t} label={t.charAt(0).toUpperCase() + t.slice(1)} value={t} />
         ))}
       </Picker>
 
+      {imagemPorTipo(tipo) && (
+        <Image source={imagemPorTipo(tipo)} style={styles.imagem} resizeMode="contain" />
+      )}
+
+      <Text>Local:</Text>
       <TextInput
-        placeholder="Local da falta de energia"
-        value={form.local}
-        onChangeText={(text) => setForm({ ...form, local: text })}
-        style={{ marginTop: 12, marginBottom: 12 }}
+        value={local}
+        onChangeText={setLocal}
+        style={styles.input}
+        placeholder="Local do alerta"
       />
 
+      <Text>Descrição:</Text>
       <TextInput
-        placeholder="Descrição"
+        value={descricao}
+        onChangeText={setDescricao}
+        style={[styles.input, { height: 80 }]}
+        placeholder="Descrição do alerta"
         multiline
-        numberOfLines={4}
-        value={form.descricao}
-        onChangeText={(text) => setForm({ ...form, descricao: text })}
-        style={{ marginBottom: 12 }}
       />
 
-      <Button title="Salvar Alerta" onPress={handleSalvar} />
+      <Button title="Salvar" onPress={handleSalvar} />
+      <Button title="Voltar" onPress={onVoltar} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20 },
+  title: { fontSize: 24, marginBottom: 15, textAlign: 'center' },
+  picker: { height: 50, width: '100%', marginBottom: 20 },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 15,
+  },
+  imagem: {
+    width: '100%',
+    height: 150,
+    marginBottom: 20,
+  },
+});
